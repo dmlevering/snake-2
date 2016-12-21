@@ -18,11 +18,12 @@ SnakeGame::SnakeGame() {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%210 + 40;
-    _g = rand()%210 + 40;
-    _b = rand()%210 + 40;
+    _r = 255;
+    _g = 255;
+    _b = 255;
     _gameover = false;
     _just_ate = false;
+    _ate_counter = 0;
 }
 
 //big 3 for SnakeGame
@@ -70,11 +71,12 @@ void SnakeGame::copy(const SnakeGame& other) {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%210 + 40;
-    _g = rand()%210 + 40;
-    _b = rand()%210 + 40;
+    _r = 255;
+    _g = 255;
+    _b = 255;
     _gameover = false;
     _just_ate = false;
+    _ate_counter = 0;
 }
 
 //default constructor for Tile
@@ -99,11 +101,12 @@ void SnakeGame::reset() {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%210 + 40;
-    _g = rand()%210 + 40;
-    _b = rand()%210 + 40;
+    _r = 255;
+    _g = 255;
+    _b = 255;
     _gameover = false;
     _just_ate = false;
+    _ate_counter = 0;
 }
 
 void SnakeGame::draw_board(sf::RenderWindow& window) {
@@ -158,6 +161,7 @@ void SnakeGame::update_model() {
         _food = _game_board[rand()%20][rand()%20];
         _score++;
         _just_ate = true;
+        _ate_counter = 0;
         //update food and snake color
         _r = rand()%210 + 40;
         _g = rand()%210 + 40;
@@ -180,7 +184,7 @@ void SnakeGame::draw_food(sf::RenderWindow& window, int x, int y) {
 }
 
 void SnakeGame::draw_snake(sf::RenderWindow& window, int x, int y) {
-    sf::RectangleShape r(sf::Vector2f(19, 19));
+    sf::RectangleShape r(sf::Vector2f(17, 17));
     if(_just_ate) {
         _r = rand()%210 + 40;
         _g = rand()%210 + 40;
@@ -199,16 +203,13 @@ void SnakeGame::play() {
     //create window
     sf::RenderWindow window(sf::VideoMode(400, 400), "Snake 2", sf::Style::Titlebar | sf::Style::Close, settings);
     window.setFramerateLimit(15);
-    int ate_counter = 0;
     while(window.isOpen()) {
         if(_just_ate) {
-            ate_counter++;
-            if(ate_counter > 10) {
+            _ate_counter++;
+            if(_ate_counter > 10) {
                 _just_ate = false;
-                ate_counter = 0;
+                _ate_counter = 0;
             }
-        }
-        if(!_just_ate) {
         }
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
@@ -221,16 +222,36 @@ void SnakeGame::play() {
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-          _direction = Direction::West;
+            if(_score == 1) {
+                _direction = Direction::West;
+            }
+            else if(_direction != Direction::East) {
+                _direction = Direction::West;
+            }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-          _direction = Direction::East;
+            if(_score == 1) {
+                _direction = Direction::East;
+            }
+            else if(_direction != Direction::West) {
+                _direction = Direction::East;
+            }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-          _direction = Direction::North;
+            if(_score == 1) {
+                _direction = Direction::North;
+            }
+            else if(_direction != Direction::South) {
+                _direction = Direction::North;
+            }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-          _direction = Direction::South;
+            if(_score == 1) {
+                _direction = Direction::South;
+            }
+            else if(_direction != Direction::North) {
+                _direction = Direction::South;
+            }
         }
 
         // clear the window with black color

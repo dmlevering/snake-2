@@ -58,6 +58,7 @@ private:
     unsigned char _r, _g, _b;
     bool _gameover;
     bool _just_ate;
+    int _ate_counter;
 };
 
 #endif
