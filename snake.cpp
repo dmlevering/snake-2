@@ -18,9 +18,9 @@ SnakeGame::SnakeGame() {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%255;
-    _g = rand()%255;
-    _b = rand()%255;
+    _r = rand()%210 + 40;
+    _g = rand()%210 + 40;
+    _b = rand()%210 + 40;
     _gameover = false;
     _just_ate = false;
 }
@@ -70,9 +70,9 @@ void SnakeGame::copy(const SnakeGame& other) {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%255;
-    _g = rand()%255;
-    _b = rand()%255;
+    _r = rand()%210 + 40;
+    _g = rand()%210 + 40;
+    _b = rand()%210 + 40;
     _gameover = false;
     _just_ate = false;
 }
@@ -89,21 +89,19 @@ Tile::Tile(int x, int y, TileInfo info)
 {/*nothing to see here, move along*/}
 
 void SnakeGame::reset() {
-    _direction = Direction::East;
     //set up the coordinates/empty board
     for(size_t i = 0; i < 20; i++) {
         for(size_t j = 0; j < 20; j++) {
             _game_board[i][j]->_info = TileInfo::Empty;
         }
     }
-    _head = _game_board[3][8];
     _snake = {};
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = rand()%255;
-    _g = rand()%255;
-    _b = rand()%255;
+    _r = rand()%210 + 40;
+    _g = rand()%210 + 40;
+    _b = rand()%210 + 40;
     _gameover = false;
     _just_ate = false;
 }
@@ -153,7 +151,6 @@ void SnakeGame::update_model() {
             std::cout << "score: " << _score << std::endl;
         }
     }
-
     _snake.front()->_info = TileInfo::Snake;
 
     if(_head == _food) {
@@ -168,9 +165,7 @@ void SnakeGame::update_model() {
     }
     else {
         //don't grow
-        if(_snake.back() != _food) {
-            _snake.back()->_info = TileInfo::Empty;
-        }
+        _snake.back()->_info = TileInfo::Empty;
         _snake.pop_back();
     }
     _head = _snake.front();
