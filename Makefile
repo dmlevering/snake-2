@@ -1,10 +1,9 @@
-CFLAGS = -std=c++1y -stdlib=libc++ -F /Library/Frameworks -g -O0 -Wall -Wextra -pedantic -c
-LFLAGS = -std=c++1y -stdlib=libc++ -lc++abi -F /Library/Frameworks -g -O0 -Wall -Wextra -pedantic
-SFMLFLAGS = -framework sfml-graphics -framework sfml-window -framework sfml-system -framework sfml-audio
+FLAGS = -std=c++1y
+
 all: snake
 snake: snake.o
-	g++ snake.o $(LFLAGS) $(SFMLFLAGS) -o snake
+	g++ snake.o $(FLAGS) -o snake -lsfml-graphics -lsfml-window -lsfml-system
 snake.o: snake.cpp snake.h
-	g++ $(CFLAGS) -c snake.cpp
+	g++ $(FLAGS) -c snake.cpp
 clean:
 	-rm -f *.o snake
