@@ -5,6 +5,6 @@ New and improved snake game
 
 To run on Ubuntu:
 
-1. Install SFML by running the command `sudo apt-get install libsfml-dev'
+1. Install SFML by running the command `sudo apt-get install libsfml-dev`
 2. cd into the /snake-game/game directory and run `make`
 3. `$ ./snake`
