@@ -208,7 +208,7 @@ void SnakeGame::play() {
     settings.antialiasingLevel = 4;
     //create window
     sf::RenderWindow window(sf::VideoMode(400, 400), "Snake 2", sf::Style::Titlebar | sf::Style::Close, settings);
-    window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(60);
     while(window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
