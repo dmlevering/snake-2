@@ -59,6 +59,7 @@ private:
     bool _gameover;
     bool _just_ate;
     int _ate_counter;
+    bool _model_update;
 };
 
 #endif

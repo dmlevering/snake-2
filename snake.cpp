@@ -24,6 +24,7 @@ SnakeGame::SnakeGame() {
     _gameover = false;
     _just_ate = false;
     _ate_counter = 0;
+    _model_update = false;
 }
 
 //big 3 for SnakeGame
@@ -77,6 +78,7 @@ void SnakeGame::copy(const SnakeGame& other) {
     _gameover = false;
     _just_ate = false;
     _ate_counter = 0;
+    _model_update = false;
 }
 
 //default constructor for Tile
@@ -107,6 +109,7 @@ void SnakeGame::reset() {
     _gameover = false;
     _just_ate = false;
     _ate_counter = 0;
+    _model_update = false;
 }
 
 void SnakeGame::draw_board(sf::RenderWindow& window) {
@@ -185,7 +188,7 @@ void SnakeGame::draw_food(sf::RenderWindow& window, int x, int y) {
 
 void SnakeGame::draw_snake(sf::RenderWindow& window, int x, int y) {
     sf::RectangleShape r(sf::Vector2f(17, 17));
-    if(_just_ate) {
+    if(_just_ate && _model_update) {
         _r = rand()%210 + 40;
         _g = rand()%210 + 40;
         _b = rand()%210 + 40;
@@ -197,16 +200,19 @@ void SnakeGame::draw_snake(sf::RenderWindow& window, int x, int y) {
 
 
 void SnakeGame::play() {
+    //clock
+    sf::Clock clock;
+
     //anti-aliasing
     sf::ContextSettings settings;
     settings.antialiasingLevel = 4;
     //create window
     sf::RenderWindow window(sf::VideoMode(400, 400), "Snake 2", sf::Style::Titlebar | sf::Style::Close, settings);
-    window.setFramerateLimit(15);
+    window.setVerticalSyncEnabled(true);
     while(window.isOpen()) {
         if(_just_ate) {
             _ate_counter++;
-            if(_ate_counter > 10) {
+            if(_ate_counter > 100) {
                 _just_ate = false;
                 _ate_counter = 0;
             }
@@ -259,7 +265,12 @@ void SnakeGame::play() {
 
         //draw stuff
         if(!_gameover) {
-            update_model();
+            sf::Time elapsed = clock.getElapsedTime();
+            if(elapsed.asMilliseconds() > 50) {
+                clock.restart();
+                update_model();
+                _model_update = true;
+            }
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -268,6 +279,7 @@ void SnakeGame::play() {
             }
         }
         draw_board(window);
+        _model_update = false;
 
         // end the current frame
         window.display();
