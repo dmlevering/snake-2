@@ -210,13 +210,6 @@ void SnakeGame::play() {
     sf::RenderWindow window(sf::VideoMode(400, 400), "Snake 2", sf::Style::Titlebar | sf::Style::Close, settings);
     window.setVerticalSyncEnabled(true);
     while(window.isOpen()) {
-        if(_just_ate) {
-            _ate_counter++;
-            if(_ate_counter > 100) {
-                _just_ate = false;
-                _ate_counter = 0;
-            }
-        }
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         while(window.pollEvent(event)) {
@@ -226,7 +219,6 @@ void SnakeGame::play() {
                 std::cout << "bye." << std::endl;
             }
         }
-
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             if(_score == 1) {
                 _direction = Direction::West;
@@ -267,8 +259,15 @@ void SnakeGame::play() {
         if(!_gameover) {
             sf::Time elapsed = clock.getElapsedTime();
             if(elapsed.asMilliseconds() > 50) {
-                clock.restart();
+                if(_just_ate) {
+                    _ate_counter++;
+                    if(_ate_counter > 22) {
+                        _just_ate = false;
+                        _ate_counter = 0;
+                    }
+                }
                 update_model();
+                clock.restart();
                 _model_update = true;
             }
         }
