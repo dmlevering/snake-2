@@ -18,12 +18,7 @@ SnakeGame::SnakeGame() {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = 255;
-    _g = 255;
-    _b = 255;
     _gameover = false;
-    _just_ate = false;
-    _ate_counter = 0;
     _model_update = false;
 }
 
@@ -72,12 +67,7 @@ void SnakeGame::copy(const SnakeGame& other) {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = 255;
-    _g = 255;
-    _b = 255;
     _gameover = false;
-    _just_ate = false;
-    _ate_counter = 0;
     _model_update = false;
 }
 
@@ -86,11 +76,18 @@ Tile::Tile() {
     _x = -1;
     _y = -1;
     _info = TileInfo::Empty;
+    _r = 0;
+    _g = 0;
+    _b = 0;
 }
 //actual constructor for Tile
 Tile::Tile(int x, int y, TileInfo info)
     : _x(x), _y(y), _info(info)
-{/*nothing to see here, move along*/}
+{
+    _r = 40 + rand() % 215;
+    _g = 40 + rand() % 215;
+    _b = 40 + rand() % 215;
+}
 
 void SnakeGame::reset() {
     //set up the coordinates/empty board
@@ -103,12 +100,7 @@ void SnakeGame::reset() {
     _snake.push_back(_head);
     _food = _game_board[rand()%20][rand()%20];
     _score = 1;
-    _r = 255;
-    _g = 255;
-    _b = 255;
     _gameover = false;
-    _just_ate = false;
-    _ate_counter = 0;
     _model_update = false;
 }
 
@@ -116,10 +108,10 @@ void SnakeGame::draw_board(sf::RenderWindow& window) {
     std::list<Tile*> snake_copy = _snake;
     for(size_t i = 0; i < _snake.size(); i++) {
         Tile* t = snake_copy.front();
-        draw_snake(window, t->_x, t->_y);
+        draw_snake(window, t);
         snake_copy.pop_front();
     }
-    draw_food(window, _food->_x, _food->_y);
+    draw_food(window, _food);
 }
 
 void SnakeGame::update_model() {
@@ -151,11 +143,9 @@ void SnakeGame::update_model() {
             _snake.push_front(_game_board[x][y+1]);
             break;
     }
-    if(!_just_ate) {
-        if(_snake.front()->_info == TileInfo::Snake) {
-            _gameover = true;
-            std::cout << "score: " << _score << std::endl;
-        }
+    if(_snake.front()->_info == TileInfo::Snake) {
+        _gameover = true;
+        std::cout << "score: " << _score << std::endl;
     }
     _snake.front()->_info = TileInfo::Snake;
 
@@ -163,12 +153,6 @@ void SnakeGame::update_model() {
         //change food location
         _food = _game_board[rand()%20][rand()%20];
         _score++;
-        _just_ate = true;
-        _ate_counter = 0;
-        //update food and snake color
-        _r = rand()%210 + 40;
-        _g = rand()%210 + 40;
-        _b = rand()%210 + 40;
     }
     else {
         //don't grow
@@ -178,23 +162,18 @@ void SnakeGame::update_model() {
     _head = _snake.front();
 }
 
-void SnakeGame::draw_food(sf::RenderWindow& window, int x, int y) {
+void SnakeGame::draw_food(sf::RenderWindow& window, Tile* t) {
     sf::CircleShape c;
-    c.setFillColor({_r, _g, _b});
+    c.setFillColor({t->_r, t->_g, t->_b});
     c.setRadius(10);
-    c.setPosition(x*20, y*20);
+    c.setPosition(t->_x*20, t->_y*20);
     window.draw(c);
 }
 
-void SnakeGame::draw_snake(sf::RenderWindow& window, int x, int y) {
+void SnakeGame::draw_snake(sf::RenderWindow& window, Tile* t) {
     sf::RectangleShape r(sf::Vector2f(17, 17));
-    if(_just_ate && _model_update) {
-        _r = rand()%210 + 40;
-        _g = rand()%210 + 40;
-        _b = rand()%210 + 40;
-    }
-    r.setFillColor({_r, _g, _b});
-    r.setPosition(x*20, y*20);
+    r.setFillColor({t->_r, t->_g, t->_b});
+    r.setPosition(t->_x*20, t->_y*20);
     window.draw(r);
 }
 
@@ -259,13 +238,6 @@ void SnakeGame::play() {
         if(!_gameover) {
             sf::Time elapsed = clock.getElapsedTime();
             if(elapsed.asMilliseconds() > 50) {
-                if(_just_ate) {
-                    _ate_counter++;
-                    if(_ate_counter > 22) {
-                        _just_ate = false;
-                        _ate_counter = 0;
-                    }
-                }
                 update_model();
                 clock.restart();
                 _model_update = true;

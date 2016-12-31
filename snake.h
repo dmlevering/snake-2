@@ -25,6 +25,10 @@ public:
     int _x;
     int _y;
     TileInfo _info;
+    //color of this tile if snake is on it
+    unsigned char _r;
+    unsigned char _g;
+    unsigned char _b;
 };
 
 class SnakeGame {
@@ -41,8 +45,8 @@ private:
 
     //graphics
     void draw_board(sf::RenderWindow& window);
-    void draw_food(sf::RenderWindow& window, int x, int y);
-    void draw_snake(sf::RenderWindow& window, int x, int y);
+    void draw_food(sf::RenderWindow& window, Tile* t);
+    void draw_snake(sf::RenderWindow& window, Tile* t);
 
     //helpers
     void copy(const SnakeGame& other);
@@ -55,10 +59,7 @@ private:
     std::vector<std::vector<Tile*> > _game_board;
     Direction _direction;
     int _score;
-    unsigned char _r, _g, _b;
     bool _gameover;
-    bool _just_ate;
-    int _ate_counter;
     bool _model_update;
 };
 
